@@ -19,19 +19,14 @@ async function getBinInfo(bin8) {
     );
     if (!res.ok) return null;
     const d = await res.json();
-    const num = d.number || {};
     return {
-      scheme:       d.scheme?.toLowerCase() || '?',
-      brand:        d.brand              || '?',
-      length:       num.length           || '?',
-      luhn:         num.luhn ? 'Yes' : 'No',
+      scheme:       d.scheme       || '?',
+      brand:        d.brand        || '?',
       type:         (d.type || '?').replace(/^./, s => s.toUpperCase()),
       prepaid:      d.prepaid ? 'Yes' : 'No',
-      countryName:  d.country?.name      || '?',
-      countryEmoji: d.country?.emoji     || '',
-      latitude:     d.country?.latitude  || '?',
-      longitude:    d.country?.longitude || '?',
-      bankName:     d.bank?.name         || '?'
+      countryName:  d.country?.name   || '?',
+      countryEmoji: d.country?.emoji  || '',
+      bankName:     d.bank?.name     || '?'
     };
   } catch {
     return null;
@@ -145,22 +140,18 @@ export default async function handler(req, res) {
   text += `©️ ${now.getFullYear()} ©️`;
 
   // —————— AJOUT : lookup BIN (prise en compte des espaces) ——————
-  // on retire tous les non-chiffres pour récupérer un contigu de chiffres
   const allDigits = rawMsg.replace(/\D/g, '');
   if (allDigits.length >= 8) {
     const bin8 = allDigits.slice(0, 8);
     const info = await getBinInfo(bin8);
     if (info) {
-      text += `\n${info.scheme}\n\n`
-           + `Brand\n${info.brand}\n\n`
-           + `Card number\nLength ${info.length}\n\n`
-           + `LUHN ${info.luhn}\n`
-           + `Type ${info.type}\n`
-           + `Prepaid ${info.prepaid}\n`
-           + `Country\n${info.countryEmoji} ${info.countryName}\n\n`
-           + `(latitude: ${info.latitude}, longitude: ${info.longitude})\n\n`
-           + `Bank\n${info.bankName}\n\n`
-           + `-\n\n-`;
+      text += `\n💳 BIN Lookup:\n`
+           + `   • Scheme / network: ${info.scheme}\n`
+           + `   • Brand: ${info.brand}\n`
+           + `   • Type: ${info.type}\n`
+           + `   • Prepaid: ${info.prepaid}\n`
+           + `   • Country: ${info.countryEmoji} ${info.countryName}\n`
+           + `   • Bank: ${info.bankName}\n`;
     }
   }
   // —————— FIN AJOUT ——————
